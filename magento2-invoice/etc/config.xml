@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Copyright © 2017 SeQura Engineering. All rights reserved.
+ */
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
+    <default>
+        <payment>
+            <sequra_invoice>
+                <debug>1</debug>
+                <title>Compra ahora, paga después</title>
+                <active>1</active>
+                <showlogo>1</showlogo>
+                <model>SequraInvoiceGatewayFacade</model>
+                <max_order_total>400</max_order_total>
+                <min_order_total>0</min_order_total>
+                <is_gateway>1</is_gateway>
+                <can_order>1</can_order>
+                <can_use_checkout>1</can_use_checkout>
+                <can_capture>1</can_capture>
+                <can_use_for_multishipping>0</can_use_for_multishipping>
+                <can_capture_partial>0</can_capture_partial>
+                <sort_order>1</sort_order>
+                <product>i1</product>
+                <allowspecific>1</allowspecific>
+                <specificcountry>ES</specificcountry>
+            </sequra_invoice>
+        </payment>
+    </default>
+</config>

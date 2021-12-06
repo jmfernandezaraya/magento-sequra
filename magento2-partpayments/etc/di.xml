@@ -1,0 +1,73 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Copyright © 2017 SeQura Engineering. All rights reserved.
+ */
+-->
+
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <!-- Payment Method Facade configuration -->
+    <virtualType name="SequraPartpaymentsGatewayFacade" type="Magento\Payment\Model\Method\Adapter">
+        <arguments>
+            <argument name="code" xsi:type="const">\Sequra\Partpayments\Model\Ui\ConfigProvider::CODE</argument>
+            <argument name="formBlockType" xsi:type="string">Magento\Payment\Block\Form</argument>
+            <!--<argument name="formBlockType" xsi:type="string">Magento\Payment\Block\Transparent\Form</argument>-->
+            <argument name="infoBlockType" xsi:type="string">Magento\Payment\Block\ConfigurableInfo</argument>
+            <argument name="valueHandlerPool" xsi:type="object">SequraPartpaymentsGatewayValueHandlerPool</argument>
+            <argument name="validatorPool" xsi:type="object">SequraPartpaymentsValidatorPool</argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Configuration reader -->
+    <virtualType name="SequraPartpaymentsGatewayConfig" type="Sequra\Core\Model\Config">
+        <arguments>
+            <argument name="methodCode" xsi:type="const">\Sequra\Partpayments\Model\Ui\ConfigProvider::CODE</argument>
+        </arguments>
+    </virtualType>
+    <type name="Sequra\Partpayments\Model\Ui\ConfigProvider">
+       <arguments>
+           <argument name="config" xsi:type="object">SequraPartpaymentsGatewayConfig</argument>
+       </arguments>
+    </type>
+
+    <!-- Value handlers infrastructure -->
+    <virtualType name="SequraPartpaymentsGatewayValueHandlerPool" type="Magento\Payment\Gateway\Config\ValueHandlerPool">
+        <arguments>
+            <argument name="handlers" xsi:type="array">
+                <item name="default" xsi:type="string">SequraPartpaymentsGatewayConfigValueHandler</item>
+            </argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="SequraPartpaymentsGatewayConfigValueHandler" type="Magento\Payment\Gateway\Config\ConfigValueHandler">
+        <arguments>
+            <argument name="configInterface" xsi:type="object">SequraPartpaymentsGatewayConfig</argument>
+        </arguments>
+    </virtualType>
+
+    <virtualType name="SequraPartpaymentsValidatorPool" type="Magento\Payment\Gateway\Validator\ValidatorPool">
+        <arguments>
+            <argument name="validators" xsi:type="array">
+                <item name="country" xsi:type="string">SequraPartpaymentsCountryValidator</item>
+                <!--Core validator -->
+                <item name="currency" xsi:type="string">SequraGatewayCurrencyValidator</item>
+            </argument>
+        </arguments>
+    </virtualType>
+    <virtualType name="SequraPartpaymentsCountryValidator" type="Magento\Payment\Gateway\Validator\CountryValidator">
+        <arguments>
+            <argument name="config" xsi:type="object">SequraPartpaymentsGatewayConfig</argument>
+        </arguments>
+    </virtualType>
+
+    <type name="Sequra\Partpayments\Block\Info">
+        <arguments>
+            <argument name="config" xsi:type="object">SequraPartpaymentsGatewayConfig</argument>
+        </arguments>
+    </type>
+
+    <type name="Sequra\Partpayments\Block\Widget\Teaser">
+        <arguments>
+            <argument name="config" xsi:type="object">SequraPartpaymentsGatewayConfig</argument>
+        </arguments>
+    </type>
+</config>

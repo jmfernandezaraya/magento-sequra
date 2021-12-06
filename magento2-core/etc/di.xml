@@ -1,0 +1,56 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Copyright © 2017 SeQura Engineering. All rights reserved.
+ */
+-->
+
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <!-- Configuration reader -->
+    <virtualType name="SequraGatewayConfig" type="Sequra\Core\Model\Config">
+        <arguments>
+            <argument name="methodCode" xsi:type="const">\Sequra\Core\Model\Ui\ConfigProvider::CODE</argument>
+        </arguments>
+    </virtualType>
+
+    <type name="Sequra\Core\Model\Ui\ConfigProvider">
+       <arguments>
+           <argument name="config" xsi:type="object">SequraGatewayConfig</argument>
+       </arguments>
+    </type>
+
+    <!-- Logger, initialized with SequraGatewayConfig -->
+    <virtualType name="SequraGatewayLogger" type="Magento\Payment\Model\Method\Logger">
+        <arguments>
+            <argument name="config" xsi:type="object">SequraGatewayConfig</argument>
+        </arguments>
+    </virtualType>
+
+    <preference for="Sequra\Core\Api\SubmissionInterface" type="Sequra\Core\Model\Service\SubmissionService"/>
+
+    <!-- Commandline option to triggerrerport and update orders-->
+    <type name="Magento\Framework\Console\CommandList">
+       <arguments>
+           <argument name="commands" xsi:type="array">
+                <item name="triggerReport" xsi:type="object">Sequra\Core\Console\TriggerReport</item>
+                <item name="updateOrdersInSeQura" xsi:type="object">Sequra\Core\Console\UpdateOrdersInSeQura</item>
+           </argument>
+       </arguments>
+    </type>
+    <virtualType name="SequraGatewayCurrencyValidator" type="Sequra\Core\Gateway\Validator\CurrencyValidator">
+        <arguments>
+            <argument name="config" xsi:type="object">SequraGatewayConfig</argument>
+        </arguments>
+    </virtualType>
+
+    <!-- Avoid sending order confirmation email if order isn't confirmed in SeQura -->
+    <!-- <type name="Magento\Sales\Model\Order\Email\Container\OrderIdentity">
+        <plugin name="change_is_enable_method" type="Sequra\Core\Plugin\Sales\Order\Email\Container\OrderIdentity"/>
+    </type> -->
+
+    <!-- CSRF -->
+    <type name="Magento\Framework\App\Request\CsrfValidator">
+        <plugin name="sequra_disable_form_key_validation" type="Sequra\Core\Plugin\Framework\App\Request\CsrfValidator" />
+    </type>
+</config>
